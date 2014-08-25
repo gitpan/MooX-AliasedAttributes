@@ -1,5 +1,5 @@
 package MooX::AliasedAttributes;
-$MooX::AliasedAttributes::VERSION = '0.02';
+$MooX::AliasedAttributes::VERSION = '0.03';
 use strictures 1;
 
 =head1 NAME
@@ -48,24 +48,6 @@ sub import {
     my $around = $target->can('around');
     my $fresh = sub{ install_modifier( $target, 'fresh', @_ ) };
 
-    $around->(
-        has => sub{
-            my ($orig, $name, %attributes) = @_;
-
-            my $aliases = delete $attributes{alias};
-            $orig->( $name, %attributes );
-            return if !$aliases;
-
-            $aliases = [ $aliases ] if !ref $aliases;
-
-            foreach my $alias ($aliases) {
-                $fresh->( $alias => sub{ shift()->$name(@_) } );
-            }
-
-            return;
-        },
-    );
-
     $fresh->(
         alias => sub{
             my ($aliases, $method) = @_;
@@ -74,6 +56,22 @@ sub import {
             foreach my $alias ($aliases) {
                 $fresh->( $alias => sub{ shift()->$method(@_) } );
             }
+        },
+    );
+
+    my $alias = $target->can('alias');
+
+    $around->(
+        has => sub{
+            my ($orig, $name, %attributes) = @_;
+
+            my $aliases = delete $attributes{alias};
+            $orig->( $name, %attributes );
+            return if !$aliases;
+
+            $alias->( $aliases, $name );
+
+            return;
         },
     );
 
