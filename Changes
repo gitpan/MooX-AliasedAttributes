@@ -1,5 +1,9 @@
 Revision history for Perl extension MooX::AliasedAttributes.
 
+0.02      2014-08-25
+ - Use just the attribute name for the alias, as neither writer or reader is
+   necessarily correct.
+
 0.01      2014-08-22
  - First release.
 

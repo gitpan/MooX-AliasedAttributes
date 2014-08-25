@@ -1,5 +1,5 @@
 package MooX::AliasedAttributes;
-$MooX::AliasedAttributes::VERSION = '0.01';
+$MooX::AliasedAttributes::VERSION = '0.02';
 use strictures 1;
 
 =head1 NAME
@@ -13,7 +13,7 @@ MooX::AliasedAttributes - Make aliases to your attributes, and methods.
     use MooX::AliasedAttributes;
     
     has color => (
-        is    => 'ro',
+        is    => 'rw',
         alias => 'colour',
     );
 
@@ -29,8 +29,9 @@ MooX::AliasedAttributes - Make aliases to your attributes, and methods.
 
 =head1 DESCRIPTION
 
-Aliases a method to an attribute's C<writer> (which is usually the same
-name as the attribute itself).
+Aliases a method to an attribute's C<name>.  Note that if you set either
+C<writer> or C<reader> that this has no affect onthe alias, the alias
+will still point at the attribute name.
 
 This module came to life to help port L<Moose> code using L<MooseX::Aliases>
 to L<Moo>.  In order to port you existing code from L<Moose> to L<Moo> you
@@ -56,10 +57,9 @@ sub import {
             return if !$aliases;
 
             $aliases = [ $aliases ] if !ref $aliases;
-            my $writer = $attributes{writer} || $name;
 
             foreach my $alias ($aliases) {
-                $fresh->( $alias => sub{ shift()->$writer(@_) } );
+                $fresh->( $alias => sub{ shift()->$name(@_) } );
             }
 
             return;

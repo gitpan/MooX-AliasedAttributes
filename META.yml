@@ -20,4 +20,4 @@ resources:
   bugtracker: https://github.com/bluefeet/MooX-AliasedAttributes/issues
   homepage: https://github.com/bluefeet/MooX-AliasedAttributes
   repository: https://github.com/bluefeet/MooX-AliasedAttributes.git
-version: '0.01'
+version: '0.02'
